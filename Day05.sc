@@ -20,8 +20,8 @@ def getCrateStacks(linesSplit: Seq[String]) = {
     .map(_.map(_.charAt(1).toString))
     .map(arr => arr.zipWithIndex)
     .foreach(_.foreach {
-      case (str, index) if (str.trim.nonEmpty) => crateStacks(index).push(str)
-      case _ => {}
+      case (str, index) if str.trim.nonEmpty => crateStacks(index).push(str)
+      case _ =>
     })
 
   crateStacks
@@ -35,18 +35,15 @@ val instructions = linesSplit(1).split("\n")
 val crateStacksB = getCrateStacks(linesSplit)
 
 instructions.foreach { case (c, f, t) =>
-  for (w <- 0 until c) {
+  for (_ <- 0 until c)
     crateStacksA(t - 1).push(crateStacksA(f - 1).pop())
-  }
 }
 
 crateStacksA.map(s => s.top).mkString("")
 
 instructions.foreach { case (c, f, t) =>
   val temp = mutable.Stack[String]()
-  (0 until c) foreach { case _ =>
-    temp.push(crateStacksB(f - 1).pop())
-  }
+  (0 until c) foreach (_ => temp.push(crateStacksB(f - 1).pop()))
   while (temp.nonEmpty) crateStacksB(t - 1).push(temp.pop())
 }
 
